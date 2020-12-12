@@ -1,5 +1,7 @@
 package homeworks.homework1
 
+import scala.annotation.tailrec
+
 object task1 extends App {
 
   /**
@@ -14,7 +16,16 @@ object task1 extends App {
    * @param n номер числа последовательности
    * @return n-ое число последовательности коров Нараяны (согласно формуле выше)
    */
-  def narayanaCows(n: Int): Int = ??? // = myTailRecursiveFunction(n, ...)
+  def narayanaCows(n: Int): Int = {
+    @tailrec
+    def helper(n: Int, v2: Int, v1: Int, v0: Int): Int =
+      n match {
+        case 0 => v0
+        case _ => helper(n - 1, v1, v0, v2 + v0)
+      }
+
+    if (n <= 2) 1 else helper(n - 2, 1, 1, 1)
+  }
 
   (for (i <- 0 until 10) yield s"$i) ${narayanaCows(i)}").foreach(println)
   //  0) 1

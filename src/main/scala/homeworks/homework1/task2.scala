@@ -55,7 +55,15 @@ object task2 extends App {
    * @param paymentInfo информация о платеже
    * @return true, если платеж безопасен, иначе false
    */
-  def isSafePayment(paymentInfo: PaymentInfo): Boolean = ???
+  def isSafePayment(paymentInfo: PaymentInfo): Boolean =
+    paymentInfo match {
+      case DebitCard(_, paymentSystem) =>
+        paymentSystem == MasterCard || paymentSystem == Visa
+      case Cash(Price(amount, currency), isLargeDenominations) =>
+        currency == "RUB" && amount <= 5000 && !isLargeDenominations
+      case Loan(_, rating) =>
+        rating > 5
+    }
 
 
   // Hint: для pattern matching'а case object'ов и литералов можно использовать такой синтаксис:
