@@ -14,7 +14,13 @@ object task3 extends App {
   //
   // Большинство методов NonEmptyList работают так же, как у обычного List,
   // но некоторые операции, например, head более безопасны, так как не бросают исключений
-  def combineErrors[E, A](a: Either[NonEmptyList[E], A])(implicit semigroupE: Semigroup[E]): Either[E, A] = ???
+  def combineErrors[E, A](a: Either[NonEmptyList[E], A])(implicit semigroupE: Semigroup[E]): Either[E, A] =
+    a match {
+      case Left(errs) =>
+        Left(errs.reduce(semigroupE.combine))
+      case Right(a) =>
+        Right(a)
+    }
 
   implicit object throwableSemigroup extends Semigroup[Throwable] {
     def combine(x: Throwable, y: Throwable): Throwable =
@@ -39,7 +45,14 @@ object task3 extends App {
   //   (причем значение из первого массива будет первым аргументом функции combine, а значение из второго массива будет вторым)
   // * если ключ есть только в одном из массивов, то в результирующем массиве будет этот ключ c таким же значением
   // * если ключа нет ни в одном массиве, то в результирующем массиве его тоже не будет
-  def mergeMaps[K, V](left: Map[K, V], right: Map[K, V])(implicit semigroupV: Semigroup[V]): Map[K, V] = ???
+  def mergeMaps[K, V](left: Map[K, V], right: Map[K, V])(implicit semigroupV: Semigroup[V]): Map[K, V] =
+    (left.toSeq ++ right.toSeq)
+      .groupBy(_._1)
+      .mapValues(
+        _.map(_._2)
+         .reduce(semigroupV.combine)
+      )
+      .toMap
 
   println(
     mergeMaps(
