@@ -18,7 +18,20 @@ object task1 extends App {
   //
   // Реализуйте метод getItems, который возвращает все наименования из заказов из списка `ids`,
   // которые начинаются на букву `firstLetter`. Порядок не важен
-  def getItems(ids: List[Int], firstLetter: Char): List[String] = ???
+  def getItems(ids: List[Int], firstLetter: Char): List[String] =
+    for {
+      id <- ids
+      name <- getOrder(id)
+      if name.head == firstLetter
+    } yield (name)
+    // (for {
+    //   id <- ids
+    //   name <- getOrder(id)
+    // } yield (name))
+    //   .filter(_.toList match {
+    //     case `firstLetter` :: tail => true
+    //     case _ => false
+    //   })
 
   println(getItems(List(1, 2, 3), 'B'))
   // List(Bananas, Butter, Beans, Bulgur)
